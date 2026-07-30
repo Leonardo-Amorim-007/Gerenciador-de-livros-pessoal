@@ -130,9 +130,10 @@ public class VisualizacaoLivro {
                 leituraCampo("Data de fim da leitura: ", verificar::verificarDataFim);
         }
 
-        divisoria(larguraMaxima);
+        verificar.salvarLivro();
+        System.out.println("\nLivro salvo com sucesso!");
 
-        mostrarLivro(verificar.getLivro());
+        divisoria(larguraMaxima);
     }
 
     // Funções da estrutura de visualização
@@ -174,9 +175,7 @@ public class VisualizacaoLivro {
         return  String.format("%02d", dia) + "/" + String.format("%02d", mes) +  "/" + ano;
     }
 
-    private void divisoria (int largura) {
-        System.out.println("+" + "-".repeat(largura) + "+");
-    }
+    private void divisoria (int largura) {System.out.println("+" + "-".repeat(largura) + "+");}
 
     private static void leituraCampo(String mensagem, Consumer<String> validador) {
         while (true) {

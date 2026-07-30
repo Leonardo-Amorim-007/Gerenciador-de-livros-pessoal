@@ -1,11 +1,12 @@
 package service;
 import model.Livro;
-
+import repository.LivroRepository;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
 public class VerificacaoLivro {
     private final Livro livro = new Livro();
+    private final LivroRepository banco = new LivroRepository();
 
     public void verificarTitulo (String texto) {
         texto = texto.trim();
@@ -72,6 +73,11 @@ public class VerificacaoLivro {
             livro.setDataFim(data);
         else
             throw new IllegalArgumentException("A data de finalização não pode ser de antes da data de inicio!");
+    }
+
+    public void salvarLivro () {
+        livro.setId(banco.ultimoId()+1);
+        banco.salvarLivro(livro);
     }
 
     private LocalDate transformaData (String dataTexto) {
