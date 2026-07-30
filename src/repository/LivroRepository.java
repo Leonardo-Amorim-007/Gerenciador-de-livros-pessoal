@@ -9,7 +9,6 @@ public class LivroRepository {
     private final JsonWriter escrita = new JsonWriter();
     private final JsonReader leitura = new JsonReader();
     private final Path caminho = Path.of("Arquivos/livros.jsonl");
-    private int qtdLivros;
     private int ultimoId;
     private ArrayList<Livro> livros;
 
@@ -25,26 +24,24 @@ public class LivroRepository {
         }
 
         // Identificando as váriaveis de controle
-        qtdLivros = livros.size();
-
         for (Livro livro : livros) {
             ultimoId = Math.max(livro.getId(), ultimoId);
         }
     }
 
-    public ArrayList<Livro> listarLivros (){
-        return this.livros;
-    }
+    public ArrayList<Livro> listarLivros (){return this.livros;}
 
     public int ultimoId () {return ultimoId;}
 
-    public int getQtdLivros () {return qtdLivros;}
+    public int getQtdLivros () {return livros.size();}
 
     public void salvarLivro(Livro livro) {
         try {
             escrita.salvarLivro(livro, caminho);
+            livros.add(livro);
+            ultimoId++;
         } catch (IOException e) {
-            throw new RuntimeException("Erro: Houve um problema ao salvar o arquivo. \nERROR:" + e);
+            throw new RuntimeException("Erro: Houve um problema ao salvar o livro no arquivo. \nERROR:" + e);
         }
     }
 }

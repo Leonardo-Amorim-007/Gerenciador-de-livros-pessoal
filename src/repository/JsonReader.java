@@ -20,9 +20,11 @@ public class JsonReader {
         String variavel;
         int indexAnterior;
         int indexPosterior;
-        int qtdVariaveis = contagemVirgula(json);
+        int qtdVariaveis;
 
         while (json != null){
+            qtdVariaveis = contagemVirgula(json);
+
             for (int i = 0; i <= qtdVariaveis; i++) {
                 // Busca por qual é o nome do dado
                 indexAnterior = json.indexOf("\"") + 1;
