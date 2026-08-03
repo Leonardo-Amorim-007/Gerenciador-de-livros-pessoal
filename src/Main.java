@@ -16,7 +16,7 @@ public class Main {
             try {
                 opcao = entrada.nextInt();
             } catch (InputMismatchException e) {
-                System.out.println("Apenas números entre 0 e 3 são aceitos!");
+                System.out.println("Apenas números entre 0 e 4 são aceitos!");
             }
 
             entrada.nextLine(); // Limpeza do buffer
@@ -40,9 +40,12 @@ public class Main {
                     System.out.println("Aperte enter para voltar");
                     entrada.nextLine();
                     break;
+                case 4:
+                    System.out.println(" ");
+                    livroView.deletarLivro();
                 default:
                     System.out.println(" ");
-                    System.out.println("Apenas números de 1 a 3 são válidos!");
+                    System.out.println("Apenas números de 1 a 4 são válidos!");
             }
             System.out.println(" ");
         }

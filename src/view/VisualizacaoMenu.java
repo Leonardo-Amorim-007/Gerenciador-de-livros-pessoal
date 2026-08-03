@@ -11,6 +11,7 @@ public class VisualizacaoMenu extends Funcoes {
         System.out.println(esquerdaMensagem(" 1 - Cadastrar novo livro.", larguraMaxima));
         System.out.println(esquerdaMensagem(" 2 - Alterar informações de um Livro.", larguraMaxima));
         System.out.println(esquerdaMensagem(" 3 - Visualizar biblioteca de livros.", larguraMaxima));
+        System.out.println(esquerdaMensagem(" 4 - Excluir um livro.", larguraMaxima));
         System.out.println(esquerdaMensagem(" 0 - Finalizar programa.", larguraMaxima));
 
         divisoria(larguraMaxima);

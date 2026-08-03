@@ -29,7 +29,17 @@ public class LivroRepository {
         }
     }
 
-    public ArrayList<Livro> listarLivros (){return this.livros;}
+    public ArrayList<Livro> listarLivros (){
+        try {
+            livros = leitura.leituraTodosLivros(caminho);
+        } catch (IOException e) {
+            if (e.toString().contains("NoSuchFileException")) {
+                throw new RuntimeException("Erro: Não existe livros salvos!");
+            } else
+                throw new RuntimeException("Erro: Houve um problema com o arquivo. \nERROR:" + e);
+        }
+        return livros;
+    }
 
     public Livro listarLivro (int id) {return livros.get(id-1);}
 
@@ -47,6 +57,14 @@ public class LivroRepository {
         }
     }
 
+    public void salvar () {
+        try {
+            escrita.salvarLivro(livros, caminho);
+        } catch (IOException e) {
+            throw new RuntimeException("Erro: Houve um problema ao salvar o livro no arquivo. \nERROR:" + e);
+        }
+    }
+
     public void alterarLivro(Livro livro) {
         try {
             livros.set(livro.getId()-1, livro);
@@ -54,5 +72,9 @@ public class LivroRepository {
         } catch (IOException e) {
             throw new RuntimeException("Erro: Houve um problema ao salvar o livro no arquivo. \nERROR:" + e);
         }
+    }
+
+    public void excluirLivro (int id) {
+        livros.remove(id-1);
     }
 }

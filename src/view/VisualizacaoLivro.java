@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import repository.LivroRepository;
 import service.VerificacaoAlteracao;
 import service.VerificacaoCadastro;
+import service.VerificacaoExclusao;
 
 public class VisualizacaoLivro extends Funcoes {
     public void mostrarBiblioteca() {
@@ -217,6 +218,37 @@ public class VisualizacaoLivro extends Funcoes {
         }
         verificador.salvarLivro();
         System.out.println("Livro salvo com sucesso!");
+    }
+
+    public void deletarLivro () {
+        VerificacaoExclusao verificador = new VerificacaoExclusao();
+        ArrayList<Livro> lista = new LivroRepository().listarLivros();
+
+        int larguraId = 0;
+        int larguraTitulo = 0;
+
+        for (Livro livro : lista) { // Coletando o tamanho do dados
+            larguraId = Math.max(larguraId, String.valueOf(livro.getId()).length());
+            larguraTitulo = Math.max(larguraTitulo, livro.getTitulo().length());
+        }
+
+        larguraId = larguraId%2 == 1?larguraId+1:larguraId+2;
+        larguraTitulo = larguraTitulo%2==1?larguraTitulo+1:larguraTitulo+2;
+        int larguraMaxima = larguraId + larguraTitulo + 4;
+
+        titulo("Excluir livro", larguraMaxima);
+
+        System.out.println("|" + centralizarMensagem("Id", larguraId) + "|" + centralizarMensagem("Título", larguraTitulo) + "|");
+
+        for (Livro livro : lista) {
+            System.out.println(esquerdaMensagem(
+                    centralizarMensagem(" " + livro.getId(), larguraId) + "|" +
+                            centralizarMensagem(livro.getTitulo(), larguraTitulo), larguraMaxima));
+        }
+
+        divisoria(larguraMaxima);
+
+        leituraCampo("Por favor, informe o ID do livro que deseja excluir: ", verificador::deletarLivro);
     }
 
     // Funções da estrutura de visualização
