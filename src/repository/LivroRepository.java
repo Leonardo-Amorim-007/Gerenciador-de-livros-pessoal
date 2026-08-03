@@ -31,15 +31,26 @@ public class LivroRepository {
 
     public ArrayList<Livro> listarLivros (){return this.livros;}
 
+    public Livro listarLivro (int id) {return livros.get(id-1);}
+
     public int ultimoId () {return ultimoId;}
 
     public int getQtdLivros () {return livros.size();}
 
     public void salvarLivro(Livro livro) {
         try {
-            escrita.salvarLivro(livro, caminho);
             livros.add(livro);
+            escrita.salvarLivro(livros, caminho);
             ultimoId++;
+        } catch (IOException e) {
+            throw new RuntimeException("Erro: Houve um problema ao salvar o livro no arquivo. \nERROR:" + e);
+        }
+    }
+
+    public void alterarLivro(Livro livro) {
+        try {
+            livros.set(livro.getId()-1, livro);
+            escrita.salvarLivro(livros, caminho);
         } catch (IOException e) {
             throw new RuntimeException("Erro: Houve um problema ao salvar o livro no arquivo. \nERROR:" + e);
         }

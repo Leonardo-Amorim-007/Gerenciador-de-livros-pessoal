@@ -1,6 +1,5 @@
 import view.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main (String[] args) {
@@ -24,30 +23,28 @@ public class Main {
 
             switch (opcao) {
                 case 0:
-                    descerTela();
+                    System.out.println(" ");
                     System.out.println("Finalizando programa.");
                     System.exit(0);
                 case 1:
-                    descerTela();
+                    System.out.println(" ");
                     livroView.cadastrarLivro();
                     break;
                 case 2:
-                    descerTela();
+                    System.out.println(" ");
                    livroView.alterarLivro();
                     break;
                 case 3:
-                    descerTela();
-                    livroView.mostrarBilbioteca();
+                    System.out.println(" ");
+                    livroView.mostrarBiblioteca();
                     System.out.println("Aperte enter para voltar");
                     entrada.nextLine();
                     break;
                 default:
-                    descerTela();
+                    System.out.println(" ");
                     System.out.println("Apenas números de 1 a 3 são válidos!");
             }
-            descerTela();
+            System.out.println(" ");
         }
     }
-
-    private static void descerTela () {System.out.print("\n".repeat(50));}
 }

@@ -20,7 +20,7 @@ public class Funcoes {
     }
 
     String centralizarMensagem(String mensagem, int largura) {
-        if (mensagem.length() > largura) {
+        if (mensagem.length() >= largura) {
             return " " + mensagem + " ";
         }
 
@@ -31,7 +31,7 @@ public class Funcoes {
     }
 
     String esquerdaMensagem(String mensagem, int largura) {
-        return "| " + mensagem + " ".repeat(largura-mensagem.length()-1) + "|";
+        return "|" + mensagem + " ".repeat(largura-mensagem.length()) + "|";
     }
 
     String mostrarData(LocalDate data) {

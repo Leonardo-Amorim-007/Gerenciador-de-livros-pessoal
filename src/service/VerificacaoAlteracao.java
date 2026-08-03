@@ -1,83 +1,135 @@
 package service;
+
 import model.Livro;
 import repository.LivroRepository;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
-public class VerificacaoLivro {
-    private final Livro livro = new Livro();
+public class VerificacaoAlteracao {
     private final LivroRepository banco = new LivroRepository();
+    private Livro livro = new Livro();
+    private Livro livroAlterado = new Livro();
+
+    public ArrayList<Livro> listarLivros (){return banco.listarLivros();}
+
+    public void coletaId (String idTexto) {
+        idTexto = idTexto.trim();
+
+        try {
+            int id = Integer.parseInt(idTexto);
+            if (id < 1)
+                throw new IllegalArgumentException("Números menores que 1 são considerados inválidos!");
+            else
+                if (id <= banco.getQtdLivros())
+                    this.livro = banco.listarLivro(id);
+            return;
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Somente números so aceitos");
+        }
+    }
+
+    public Livro getLivroAtual() {return livro;}
+
+    public Livro getLivroAlterado() {return livroAlterado;}
 
     public void verificarTitulo (String texto) {
         texto = texto.trim();
-        if (texto.isBlank())
-            throw new IllegalArgumentException("O campo não pode estar vazio!");
-        else if (texto.length() > 200)
+        if (texto.isBlank()) {
+            livroAlterado.setTitulo(livro.getTitulo());
+            return;
+        }
+
+        if (texto.length() > 200)
             throw new IllegalArgumentException("O campo não pode ter mais de 200 caracteres!");
         else
-            livro.setTitulo(texto);
+            livroAlterado.setTitulo(texto);
     }
 
     public void verificarAutor (String texto) {
         texto = texto.trim();
-        if (texto.isBlank())
-            throw new IllegalArgumentException("O campo não pode estar vazio!");
-        else if (texto.length() > 100)
+        if (texto.isBlank()) {
+            livroAlterado.setAutor(livro.getAutor());
+            return;
+        }
+        if (texto.length() > 100)
             throw new IllegalArgumentException("O campo não pode ter mais de 200 caracteres!");
         else
-            livro.setAutor(texto);
+            livroAlterado.setAutor(texto);
     }
 
     public void verificarQtdPaginas (String texto) {
         texto = texto.trim();
+        if (texto.isBlank()) {
+            livroAlterado.setQtdPaginas(livro.getQtdPaginas());
+            return;
+        }
         try {
             int qtdPaginas = Integer.parseInt(texto);
             if (qtdPaginas < 1)
-                throw new IllegalArgumentException("Números menores que 0 não são considerados válidos!");
+                throw new IllegalArgumentException("Números menores que 1 não são considerados válidos!");
             else
-                livro.setQtdPaginas(qtdPaginas);
+                livroAlterado.setQtdPaginas(qtdPaginas);
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Não é possível transformar: \"" + texto + "\" em número!!");
         }
     }
 
+    public void verificarTipo (String texto) {
+        texto = texto.trim();
+
+        if (texto.length() > 50)
+            throw new IllegalArgumentException("O campo não pode ter mais de 50 caracteres!");
+        else if (texto.isBlank())
+            livroAlterado.setTipo(livro.getTipo());
+        else
+            livroAlterado.setTipo(texto);
+    }
+
     public void verificarStatus(String texto) {
         texto = texto.trim();
+
+        if (texto.isBlank()) {
+            livroAlterado.setStatus(livro.getStatus());
+            return;
+        }
+
         if (texto.equalsIgnoreCase("Nao lido"))
             texto = "Não lido";
 
         if (texto.equalsIgnoreCase("Lido") || texto.equalsIgnoreCase("Lendo") || texto.equalsIgnoreCase("Não lido")) {
             texto = texto.substring(0,1).toUpperCase() + texto.substring(1).toLowerCase(); // Função para colocar apenas a primeira linha maiúscula
-            livro.setStatus(texto);
+            livroAlterado.setStatus(texto);
         } else
             throw new IllegalArgumentException("Apenas são aceitos os seguintes valores \"Lido\", \"Lendo\" e \"Não lido\"");
     }
 
-    public void verificarTipo (String texto) {
-        texto = texto.trim();
-        if (texto.length() > 50)
-            throw new IllegalArgumentException("O campo não pode ter mais de 50 caracteres!");
-        else
-            livro.setTipo(texto);
-    }
-
     public void verificarDataInicio (String dataTexto) {
         dataTexto = dataTexto.trim();
+        if (dataTexto.isBlank()) {
+            livroAlterado.setDataInicio(livro.getDataInicio());
+            return;
+        }
         livro.setDataInicio(transformaData(dataTexto));
     }
 
     public void verificarDataFim (String dataTexto) {
         dataTexto = dataTexto.trim();
+        if (dataTexto.isBlank()) {
+            livroAlterado.setDataFim(livro.getDataFim());
+            return;
+        }
         LocalDate data = transformaData(dataTexto);
         if (data.isAfter(livro.getDataInicio()))
             livro.setDataFim(data);
         else
-            throw new IllegalArgumentException("A data de finalização não pode ser de antes da data de inicio!");
+            throw new IllegalArgumentException("A data de finalização não pode ser de antes da data de início!");
     }
 
     public void salvarLivro () {
-        livro.setId(banco.ultimoId()+1);
-        banco.salvarLivro(livro);
+        livroAlterado.setId(livro.getId());
+        banco.alterarLivro(livroAlterado);
     }
 
     private LocalDate transformaData (String dataTexto) {
@@ -106,6 +158,4 @@ public class VerificacaoLivro {
             throw new IllegalArgumentException("A data: " + dataTexto + " não existe, por favor informe uma data válida!");
         }
     }
-
-    public Livro getLivro() {return livro;}
 }

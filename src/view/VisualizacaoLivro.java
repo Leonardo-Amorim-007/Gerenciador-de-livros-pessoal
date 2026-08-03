@@ -1,18 +1,19 @@
 package view;
 import model.Livro;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
 import repository.LivroRepository;
-import service.VerificacaoLivro;
+import service.VerificacaoAlteracao;
+import service.VerificacaoCadastro;
 
 public class VisualizacaoLivro extends Funcoes {
     private int larguraMaxima = 100;
     private final LivroRepository banco = new LivroRepository();
 
-    public void mostrarBilbioteca() {
+    public void mostrarBiblioteca() {
         ArrayList<Livro> lista = banco.listarLivros();
         int tamMaxTitulo = 0;
         int tamMaxAutor = 0;
@@ -100,7 +101,7 @@ public class VisualizacaoLivro extends Funcoes {
         System.out.println(esquerdaMensagem("Quantidade de página: " + livro.getQtdPaginas(), larguraMaxima));
         System.out.println(esquerdaMensagem("Status: " + livro.getStatus(), larguraMaxima));
         if(livro.getDataInicio() != null) {
-            System.out.println(esquerdaMensagem("Ínicio da leitura: " + mostrarData(livro.getDataInicio()), larguraMaxima));
+            System.out.println(esquerdaMensagem("Início da leitura: " + mostrarData(livro.getDataInicio()), larguraMaxima));
             if (livro.getDataFim() != null) {
                 System.out.println(esquerdaMensagem("Fim da leitura: " + mostrarData(livro.getDataFim()), larguraMaxima));
                 System.out.println(esquerdaMensagem("Tempo de leitura (dias): " + livro.getTempoLeitura(), larguraMaxima));
@@ -112,7 +113,7 @@ public class VisualizacaoLivro extends Funcoes {
     }
 
     public void cadastrarLivro () {
-        VerificacaoLivro verificar = new VerificacaoLivro();
+        VerificacaoCadastro verificar = new VerificacaoCadastro();
 
         titulo("Cadastro de livro", larguraMaxima);
 
@@ -140,8 +141,66 @@ public class VisualizacaoLivro extends Funcoes {
     }
 
     public void alterarLivro () {
+        VerificacaoAlteracao verificador = new VerificacaoAlteracao();
+        ArrayList<Livro> lista = verificador.listarLivros();
 
+        // Escolha do livro a ser modificado
+        int larguraId = 0;
+        int larguraTitulo = 0;
+
+        for (Livro livro : lista) { // Coletando o tamanho do dados
+            larguraId = Math.max(larguraId, String.valueOf(livro.getId()).length());
+            larguraTitulo = Math.max(larguraTitulo, livro.getTitulo().length());
+        }
+
+        larguraId = larguraId%2 == 1?larguraId+1:larguraId+2;
+        larguraTitulo = larguraTitulo%2==1?larguraTitulo+1:larguraTitulo+2;
+        larguraMaxima = larguraId + larguraTitulo + 4;
+
+        titulo("Alteração", larguraMaxima);
+
+        System.out.println("|" + centralizarMensagem("Id", larguraId) + "|" + centralizarMensagem("Título", larguraTitulo) + "|");
+
+        for (Livro livro : lista) {
+            System.out.println(esquerdaMensagem(
+                    centralizarMensagem(" " + livro.getId(), larguraId) + "|" +
+                            centralizarMensagem(livro.getTitulo(), larguraTitulo), larguraMaxima));
+        }
+
+        divisoria(larguraMaxima);
+
+        leituraCampo("Por favor, informe o ID do livro que deseja modificar: ", verificador::coletaId);
+
+        // Modificação do livro
+        System.out.println("Aperte enter caso não deseje alterar o campo.\n");
+
+        System.out.println("Título atual: " + verificador.getLivroAtual().getTitulo());
+        leituraCampo("Título: ", verificador::verificarTitulo);
+
+        System.out.println("Autor atual: " + verificador.getLivroAtual().getAutor());
+        leituraCampo("Autor: ", verificador::verificarAutor);
+
+        System.out.println("Quantidade de páginas atual: " + verificador.getLivroAtual().getQtdPaginas());
+        leituraCampo("Quantidade de páginas: ", verificador::verificarQtdPaginas);
+
+        System.out.println("Tipo atual: " + verificador.getLivroAtual().getTipo());
+        leituraCampo("Tipo do livro: ", verificador::verificarTipo);
+
+        System.out.println("Status atual: " + verificador.getLivroAtual().getStatus());
+        leituraCampo("Status de leitura(Lido, Lendo, Não lido): ", verificador::verificarStatus);
+
+        if (!verificador.getLivroAtual().getStatus().equals(verificador.getLivroAlterado().getStatus())) {
+            if (verificador.getLivroAlterado().getStatus().contains("Lendo") || verificador.getLivroAlterado().getStatus().contains("Lido")) {
+                leituraCampo("Data de inicio da leitura: ", verificador::verificarDataInicio);
+
+                if (verificador.getLivroAlterado().getStatus().contains("Lido"))
+                    leituraCampo("Data de fim da leitura: ", verificador::verificarDataFim);
+            }
+        }
+        verificador.salvarLivro();
+        System.out.println("Livro salvo com sucesso!");
     }
+
     // Funções da estrutura de visualização
     private static void leituraCampo(String mensagem, Consumer<String> validador) {
         while (true) {

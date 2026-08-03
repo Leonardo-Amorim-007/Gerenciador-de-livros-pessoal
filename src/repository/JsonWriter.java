@@ -2,17 +2,15 @@ package repository;
 import model.Livro;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.ArrayList;
 
 public class JsonWriter {
-    public void salvarLivro (Livro livro, Path caminho) throws IOException {
-        String json = montarJson(livro);
+    public void salvarLivro (ArrayList<Livro> livros, Path caminho) throws IOException {
+        StringBuilder json = new StringBuilder();
+        for (Livro livro : livros)
+            json.append(montarJson(livro));
 
-        // Alterar essa lógica
-        if (Files.exists(caminho)) {
-            json = "\n" + json;
-        }
-
-        Files.writeString(caminho, json, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        Files.writeString(caminho, json.toString());
     }
 
     private String montarJson (Livro livro) {
@@ -31,7 +29,7 @@ public class JsonWriter {
                 json.append(",\"dataFim\":\"" + livro.getDataFim() + "\"");
         }
 
-        json.append("}");
+        json.append("}\n");
 
        return json.toString();
     }
