@@ -10,88 +10,105 @@ import service.VerificacaoAlteracao;
 import service.VerificacaoCadastro;
 
 public class VisualizacaoLivro extends Funcoes {
-    private int larguraMaxima = 100;
-    private final LivroRepository banco = new LivroRepository();
-
     public void mostrarBiblioteca() {
-        ArrayList<Livro> lista = banco.listarLivros();
+        ArrayList<Livro> lista = new LivroRepository().listarLivros();
         int tamMaxTitulo = 0;
         int tamMaxAutor = 0;
         int tamMaxTipo = 0;
         int tamMaxQtdPg = 16;
         int tamMaxMediaLeitura = 24;
+        boolean livroLendo = false;
+        boolean livroLido = false;
+        boolean livroNaoLido = false;
 
         for (Livro livro : lista) {
             tamMaxTitulo = Math.max(livro.getTitulo().length(), tamMaxTitulo);
             tamMaxAutor = Math.max(livro.getAutor().length(), tamMaxAutor);
             tamMaxTipo = Math.max(livro.getTipo().length(), tamMaxTipo);
+            livroLendo = !(livro.getStatus().compareTo("Lendo") == 0);
+            livroLido = !(livro.getStatus().compareTo("Lido") == 0);
+            livroNaoLido = !(livro.getStatus().compareTo("Não Lido") == 0);
         }
 
         tamMaxTitulo += 2;
         tamMaxAutor += 2;
         tamMaxTipo += 2;
 
-        larguraMaxima = tamMaxTitulo + tamMaxAutor + tamMaxTipo + tamMaxQtdPg + tamMaxMediaLeitura + 4;
+        int larguraMaxima = tamMaxTitulo + tamMaxAutor + tamMaxTipo + tamMaxQtdPg + tamMaxMediaLeitura + 4;
         
         titulo("Biblioteca de livros", larguraMaxima);
 
-        titulo("Lendo", larguraMaxima);
-
-        System.out.println("|" + centralizarMensagem("Título", tamMaxTitulo) + "|" +
-            centralizarMensagem("Autor", tamMaxAutor) + "|" +
-            centralizarMensagem("Tipo", tamMaxTipo) + "|" +
-            centralizarMensagem("Qtd de páginas", tamMaxQtdPg) + "|" +
-            centralizarMensagem("Média de leitura / dia", tamMaxMediaLeitura) + "|");
-
-        for (Livro livro : lista) {
-            if (livro.getStatus().compareTo("Lendo") == 0) {
-                System.out.println("|" + centralizarMensagem(livro.getTitulo(), tamMaxTitulo) + "|" +
-                        centralizarMensagem(livro.getAutor(), tamMaxAutor) + "|" +
-                        centralizarMensagem(livro.getTipo(), tamMaxTipo) + "|" +
-                        centralizarMensagem(String.valueOf(livro.getQtdPaginas()), tamMaxQtdPg) + "|" +
-                        centralizarMensagem("NDA", tamMaxMediaLeitura) + "|");
-            }
+        if (!(livroLendo || livroLido || livroNaoLido)) {
+            System.out.println("Não há livros cadastrados! ");
+            System.out.println("Por favor, cadastre um novo livro.");
+            System.out.println("+" + "-".repeat(larguraMaxima) + "+");
+            return;
         }
+
+        titulo("Lendo", larguraMaxima);
+        if (livroLendo) {
+            System.out.println("|" + centralizarMensagem("Título", tamMaxTitulo) + "|" +
+                    centralizarMensagem("Autor", tamMaxAutor) + "|" +
+                    centralizarMensagem("Tipo", tamMaxTipo) + "|" +
+                    centralizarMensagem("Qtd de páginas", tamMaxQtdPg) + "|" +
+                    centralizarMensagem("Média de leitura / dia", tamMaxMediaLeitura) + "|");
+
+            for (Livro livro : lista) {
+                if (livro.getStatus().compareTo("Lendo") == 0) {
+                    System.out.println("|" + centralizarMensagem(livro.getTitulo(), tamMaxTitulo) + "|" +
+                            centralizarMensagem(livro.getAutor(), tamMaxAutor) + "|" +
+                            centralizarMensagem(livro.getTipo(), tamMaxTipo) + "|" +
+                            centralizarMensagem(String.valueOf(livro.getQtdPaginas()), tamMaxQtdPg) + "|" +
+                            centralizarMensagem("NDA", tamMaxMediaLeitura) + "|");
+                }
+            }
+        } else
+            System.out.println(esquerdaMensagem("Não há livros nessa categoria", larguraMaxima));
 
         titulo("Lido", larguraMaxima);
+        if (livroLido) {
+            System.out.println("|" + centralizarMensagem("Título", tamMaxTitulo) + "|" +
+                    centralizarMensagem("Autor", tamMaxAutor) + "|" +
+                    centralizarMensagem("Tipo", tamMaxTipo) + "|" +
+                    centralizarMensagem("Qtd de páginas", tamMaxQtdPg) + "|" +
+                    centralizarMensagem("Média de leitura / dia", tamMaxMediaLeitura) + "|");
 
-        System.out.println("|" + centralizarMensagem("Título", tamMaxTitulo) + "|" +
-                centralizarMensagem("Autor", tamMaxAutor) + "|" +
-                centralizarMensagem("Tipo", tamMaxTipo) + "|" +
-                centralizarMensagem("Qtd de páginas", tamMaxQtdPg) + "|" +
-                centralizarMensagem("Média de leitura / dia", tamMaxMediaLeitura) + "|");
-
-        for (Livro livro : lista) {
-            if (livro.getStatus().compareTo("Lido") == 0) {
-                System.out.println("|" + centralizarMensagem(livro.getTitulo(), tamMaxTitulo) + "|" +
-                        centralizarMensagem(livro.getAutor(), tamMaxAutor) + "|" +
-                        centralizarMensagem(livro.getTipo(), tamMaxTipo) + "|" +
-                        centralizarMensagem(String.valueOf(livro.getQtdPaginas()), tamMaxQtdPg) + "|" +
-                        centralizarMensagem(String.valueOf((int)livro.getMediaPaginasLidas()), tamMaxMediaLeitura) + "|");
+            for (Livro livro : lista) {
+                if (livro.getStatus().compareTo("Lido") == 0) {
+                    System.out.println("|" + centralizarMensagem(livro.getTitulo(), tamMaxTitulo) + "|" +
+                            centralizarMensagem(livro.getAutor(), tamMaxAutor) + "|" +
+                            centralizarMensagem(livro.getTipo(), tamMaxTipo) + "|" +
+                            centralizarMensagem(String.valueOf(livro.getQtdPaginas()), tamMaxQtdPg) + "|" +
+                            centralizarMensagem(String.valueOf((int) livro.getMediaPaginasLidas()), tamMaxMediaLeitura) + "|");
+                }
             }
-        }
+        } else
+            System.out.println(esquerdaMensagem("Não há livros nessa categoria", larguraMaxima));
+
         titulo("Não lido", larguraMaxima);
+        if (livroNaoLido) {
+            System.out.println("|" + centralizarMensagem("Título", tamMaxTitulo) + "|" +
+                    centralizarMensagem("Autor", tamMaxAutor) + "|" +
+                    centralizarMensagem("Tipo", tamMaxTipo) + "|" +
+                    centralizarMensagem("Qtd de páginas", tamMaxQtdPg) + "|" +
+                    centralizarMensagem("Média de leitura / dia", tamMaxMediaLeitura) + "|");
 
-        System.out.println("|" + centralizarMensagem("Título", tamMaxTitulo) + "|" +
-                centralizarMensagem("Autor", tamMaxAutor) + "|" +
-                centralizarMensagem("Tipo", tamMaxTipo) + "|" +
-                centralizarMensagem("Qtd de páginas", tamMaxQtdPg) + "|" +
-                centralizarMensagem("Média de leitura / dia", tamMaxMediaLeitura) + "|");
-
-        for (Livro livro : lista) {
-            if (livro.getStatus().compareTo("Não lido") == 0) {
-                System.out.println("|" + centralizarMensagem(livro.getTitulo(), tamMaxTitulo) + "|" +
-                        centralizarMensagem(livro.getAutor(), tamMaxAutor) + "|" +
-                        centralizarMensagem(livro.getTipo(), tamMaxTipo) + "|" +
-                        centralizarMensagem(String.valueOf(livro.getQtdPaginas()), tamMaxQtdPg) + "|" +
-                        centralizarMensagem("NDA", tamMaxMediaLeitura) + "|");
+            for (Livro livro : lista) {
+                if (livro.getStatus().compareTo("Não lido") == 0) {
+                    System.out.println("|" + centralizarMensagem(livro.getTitulo(), tamMaxTitulo) + "|" +
+                            centralizarMensagem(livro.getAutor(), tamMaxAutor) + "|" +
+                            centralizarMensagem(livro.getTipo(), tamMaxTipo) + "|" +
+                            centralizarMensagem(String.valueOf(livro.getQtdPaginas()), tamMaxQtdPg) + "|" +
+                            centralizarMensagem("NDA", tamMaxMediaLeitura) + "|");
+                }
             }
-        }
-
+        } else
+            System.out.println(esquerdaMensagem("Não há livros nessa categoria", larguraMaxima));
         System.out.println("+" + "-".repeat(larguraMaxima) + "+");
     }
 
     public void mostrarLivro(Livro livro) {
+        int larguraMaxima = 100;
 
         // Mostrando o livro
         titulo(livro.getTitulo(), larguraMaxima);
@@ -113,11 +130,12 @@ public class VisualizacaoLivro extends Funcoes {
     }
 
     public void cadastrarLivro () {
+        int larguraMaxima = 100;
         VerificacaoCadastro verificar = new VerificacaoCadastro();
 
+        // Coleta e verificação dos campos
         titulo("Cadastro de livro", larguraMaxima);
 
-        // Coleta e verificação dos campos
         leituraCampo("Título: ", verificar::verificarTitulo);
 
         leituraCampo("Autor: ", verificar::verificarAutor);
@@ -155,7 +173,7 @@ public class VisualizacaoLivro extends Funcoes {
 
         larguraId = larguraId%2 == 1?larguraId+1:larguraId+2;
         larguraTitulo = larguraTitulo%2==1?larguraTitulo+1:larguraTitulo+2;
-        larguraMaxima = larguraId + larguraTitulo + 4;
+        int larguraMaxima = larguraId + larguraTitulo + 4;
 
         titulo("Alteração", larguraMaxima);
 

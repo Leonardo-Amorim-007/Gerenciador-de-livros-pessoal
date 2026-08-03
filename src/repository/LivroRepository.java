@@ -10,7 +10,7 @@ public class LivroRepository {
     private final JsonReader leitura = new JsonReader();
     private final Path caminho = Path.of("Arquivos/livros.jsonl");
     private int ultimoId;
-    private ArrayList<Livro> livros;
+    private ArrayList<Livro> livros=null;
 
     public LivroRepository() {
         // Carregando os livros
